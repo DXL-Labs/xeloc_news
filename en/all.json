@@ -4,22 +4,19 @@
 			"num": 1,
 			"date": "2026-04-01",
 			"title": "XELOC Release",
-			"body": "Thank you for using XELOC. A wallet powered by the XRP Ledger.",
-			"is_new": true
+			"body": "Thank you for using XELOC. A wallet powered by the XRP Ledger."
 		},
 		{
 			"num": 2,
 			"date": "2026-04-15",
 			"title": "System Maintenance Notice",
-			"body": "The system will be down from 00:00 to 00:00 on April 20 for scheduled maintenance.",
-			"is_new": true
+			"body": "The system will be down from 00:00 to 00:00 on April 20 for scheduled maintenance."
 		},
 		{
 			"num": 3,
 			"date": "2026-04-22",
 			"title": "Added News Feature",
-			"body": "We've added a news feature to the app. Get updates when you launch.",
-			"is_new": true
+			"body": "We've added a news feature to the app. Get updates when you launch."
 		}
 	]
 }
