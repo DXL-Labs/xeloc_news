@@ -2,21 +2,9 @@
 	"items": [
 		{
 			"num": 1,
-			"date": "2026-04-01",
-			"title": "XELOC Release",
-			"body": "Thank you for using XELOC. A wallet powered by the XRP Ledger."
-		},
-		{
-			"num": 2,
-			"date": "2026-04-15",
-			"title": "System Maintenance Notice",
-			"body": "The system will be down from 00:00 to 00:00 on April 20 for scheduled maintenance."
-		},
-		{
-			"num": 3,
-			"date": "2026-04-22",
-			"title": "Added News Feature",
-			"body": "We've added a news feature to the app. Get updates when you launch."
+			"date": "2026-07-13",
+			"title": "Released xeloc.",
+			"body": "Thank you for downloading.\nXeloc is a simple XRP Ledger Client.\nIt operates with minimal transaction fees.\nPlease feel free to use it."
 		}
 	]
 }
