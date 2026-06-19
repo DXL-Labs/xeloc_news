@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>xeloc News CMS</title>
+		<link rel="stylesheet" href="/styles.css" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div>
+				<p class="eyebrow">xeloc</p>
+				<h1>News CMS</h1>
+			</div>
+			<div class="actions">
+				<button id="reloadButton" class="secondary" type="button">
+					Reload
+				</button>
+				<button id="generateButton" class="secondary" type="button">
+					Generate
+				</button>
+				<button id="saveButton" type="button">Save</button>
+			</div>
+		</header>
+
+		<main class="layout">
+			<aside class="sidebar">
+				<div class="language-tabs" role="tablist" aria-label="Languages">
+					<button class="language-tab active" data-language="ja" type="button">
+						JA
+					</button>
+					<button class="language-tab" data-language="en" type="button">
+						EN
+					</button>
+				</div>
+
+				<button id="newItemButton" class="wide" type="button">New News</button>
+				<div id="newsList" class="news-list"></div>
+			</aside>
+
+			<section class="editor">
+				<div class="editor-header">
+					<div>
+						<p id="editorMeta" class="eyebrow">No item selected</p>
+						<h2 id="editorTitle">Select or create news</h2>
+					</div>
+					<div class="actions">
+						<button
+							id="duplicateButton"
+							class="secondary"
+							type="button"
+							disabled
+						>
+							Duplicate
+						</button>
+						<button id="deleteButton" class="danger" type="button" disabled>
+							Delete
+						</button>
+					</div>
+				</div>
+
+				<form id="editorForm" class="form" autocomplete="off">
+					<div class="grid">
+						<label>
+							Num
+							<input
+								id="numInput"
+								name="num"
+								type="number"
+								min="1"
+								step="1"
+								required
+							/>
+						</label>
+						<label>
+							Date
+							<input id="dateInput" name="date" type="date" required />
+						</label>
+						<label>
+							Status
+							<select id="statusInput" name="status">
+								<option value="published">Published</option>
+								<option value="draft">Draft</option>
+							</select>
+						</label>
+					</div>
+
+					<label>
+						Title
+						<input id="titleInput" name="title" type="text" required />
+					</label>
+
+					<div class="field">
+						<div class="field-head">
+							<label for="bodyInput">Body</label>
+							<div class="mini-actions" aria-label="Body helpers">
+								<button id="insertLinkButton" class="secondary mini" type="button">Link</button>
+								<button id="insertImageButton" class="secondary mini" type="button">Image</button>
+								<button id="insertImageLinkButton" class="secondary mini" type="button">Image Link</button>
+							</div>
+						</div>
+						<textarea id="bodyInput" name="body" rows="12" required></textarea>
+						<p class="format-hint">Use [text](https://example.com), ![alt](https://example.com/image.png), or [![alt](https://example.com/image.png)](https://example.com).</p>
+					</div>
+
+					<label>
+						Note
+						<textarea id="noteInput" name="note" rows="3"></textarea>
+					</label>
+				</form>
+
+				<section class="preview">
+					<div>
+						<p class="eyebrow">Preview</p>
+						<h3 id="previewTitle"></h3>
+						<p id="previewDate" class="preview-date"></p>
+					</div>
+					<p id="previewBody"></p>
+				</section>
+			</section>
+
+			<aside class="publish-panel">
+				<h2>Publish</h2>
+				<p class="hint">
+					Save writes source JSON and regenerates app delivery files. Commit
+					stages source and generated files.
+				</p>
+
+				<label>
+					Commit message
+					<input id="commitMessageInput" type="text" value="Update news" />
+				</label>
+
+				<label class="checkbox">
+					<input id="pushInput" type="checkbox" />
+					Push after commit
+				</label>
+
+				<button id="commitButton" class="wide" type="button">Commit</button>
+
+				<div class="status-box">
+					<p class="eyebrow">Git Status</p>
+					<pre id="gitStatus">Loading...</pre>
+				</div>
+
+				<div class="status-box">
+					<p class="eyebrow">Log</p>
+					<pre id="messageLog">Ready.</pre>
+				</div>
+			</aside>
+		</main>
+
+		<script src="/app.js"></script>
+	</body>
+</html>

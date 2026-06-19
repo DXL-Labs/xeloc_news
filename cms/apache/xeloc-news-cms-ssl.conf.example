@@ -1,0 +1,54 @@
+# Example HTTPS macOS Apache virtual host for:
+#   https://xeloc-news.dxl-labs.lc/
+#
+# This serves the CMS UI from Apache and proxies API calls to the Node server.
+# Keep the Node API running with:
+#
+#   cd /Users/kentacky/DXL-Labs/xeloc-news/cms
+#   npm start
+#
+# If you want the Node API to start automatically, register it with launchd.
+#
+# Required Apache modules:
+#   LoadModule ssl_module libexec/apache2/mod_ssl.so
+#   LoadModule proxy_module libexec/apache2/mod_proxy.so
+#   LoadModule proxy_http_module libexec/apache2/mod_proxy_http.so
+
+<VirtualHost *:443>
+    ServerName xeloc-news.dxl-labs.lc
+    DocumentRoot "/Users/kentacky/DXL-Labs/xeloc-news/cms/public"
+
+    SSLEngine on
+    SSLCertificateFile "/path/to/xeloc-news.dxl-labs.lc.crt"
+    SSLCertificateKeyFile "/path/to/xeloc-news.dxl-labs.lc.key"
+
+    <Directory "/Users/kentacky/DXL-Labs/xeloc-news/cms/public">
+        Options -Indexes +FollowSymLinks
+        AllowOverride None
+        Require all granted
+
+        DirectoryIndex index.html
+    </Directory>
+
+    ProxyPreserveHost On
+    ProxyPass "/api/" "http://127.0.0.1:4177/api/"
+    ProxyPassReverse "/api/" "http://127.0.0.1:4177/api/"
+
+    Alias "/ja/" "/Users/kentacky/DXL-Labs/xeloc-news/ja/"
+    Alias "/en/" "/Users/kentacky/DXL-Labs/xeloc-news/en/"
+
+    <Directory "/Users/kentacky/DXL-Labs/xeloc-news/ja">
+        Options -Indexes
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    <Directory "/Users/kentacky/DXL-Labs/xeloc-news/en">
+        Options -Indexes
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    ErrorLog "/private/var/log/apache2/xeloc-news-cms-ssl-error.log"
+    CustomLog "/private/var/log/apache2/xeloc-news-cms-ssl-access.log" common
+</VirtualHost>
