@@ -2,5 +2,5 @@
   "num": 1,
   "date": "2026-07-13",
   "title": "xelocをリリースしました",
-  "body": "ダウンロードありがとうございます。\nxelocはシンプルなXRP Ledger Clientです。\n最低限のトランザクションフィーで操作可能です。\n是非ご利用ください。\n[https://dev.majili.com/testbanner.png](https://xeloc.dxl-labs.dev/)\n[アプリサイトはこちら。](https://xeloc.dxl-labs.dev/)\n[開発者サイトはこちら。](https://dxl-labs.dev/)"
+  "body": "ダウンロードありがとうございます。\nxelocはシンプルなXRP Ledger Clientです。\n最低限のトランザクションフィーで操作可能です。\n是非ご利用ください。\n[![image バナー](https://dev.majili.com/testbanner.png)](https://xeloc.dxl-labs.dev/)\n[アプリサイトはこちら。](https://xeloc.dxl-labs.dev/)\n[開発者サイトはこちら。](https://dxl-labs.dev/)"
 }
