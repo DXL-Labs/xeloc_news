@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "language": "ja",
-  "version": 16,
-  "updatedAt": "2026-07-01T12:31:15.346Z",
+  "version": 17,
+  "updatedAt": "2026-07-01T13:46:26.632Z",
   "items": [
     {
       "num": 1,
@@ -22,6 +22,16 @@
       "body": "開発環境テスト",
       "createdAt": "2026-07-01T12:30:28.769Z",
       "updatedAt": "2026-07-01T12:30:57.489Z",
+      "note": ""
+    },
+    {
+      "num": 3,
+      "status": "draft",
+      "date": "2026-07-15",
+      "title": "テスト２",
+      "body": "テスト２",
+      "createdAt": "2026-07-01T13:46:08.402Z",
+      "updatedAt": "2026-07-01T13:46:26.632Z",
       "note": ""
     }
   ]
