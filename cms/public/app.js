@@ -5,6 +5,7 @@ const state = {
   language: 'ja',
   selectedNum: null,
   dirty: false,
+  environment: null,
 };
 
 const els = {
@@ -15,6 +16,10 @@ const els = {
   duplicateButton: document.querySelector('#duplicateButton'),
   deleteButton: document.querySelector('#deleteButton'),
   commitButton: document.querySelector('#commitButton'),
+  developmentEnvButton: document.querySelector('#developmentEnvButton'),
+  productionEnvButton: document.querySelector('#productionEnvButton'),
+  environmentUrl: document.querySelector('#environmentUrl'),
+  environmentSummary: document.querySelector('#environmentSummary'),
   newsList: document.querySelector('#newsList'),
   editorMeta: document.querySelector('#editorMeta'),
   editorTitle: document.querySelector('#editorTitle'),
@@ -79,6 +84,8 @@ function setButtonsDisabled(disabled) {
     els.duplicateButton,
     els.deleteButton,
     els.commitButton,
+    els.developmentEnvButton,
+    els.productionEnvButton,
   ].forEach((button) => {
     button.disabled = disabled;
   });
@@ -86,6 +93,27 @@ function setButtonsDisabled(disabled) {
 
 function updateGitStatus(status) {
   els.gitStatus.textContent = status || 'Clean';
+}
+
+function updateEnvironment(environment) {
+  state.environment = environment;
+  if (!environment) return;
+
+  const current = environment.current;
+  const isProduction = current === 'production';
+  const label = isProduction ? 'Production' : current === 'development' ? 'Development' : 'Custom';
+  const url = environment.url || '';
+
+  document.querySelectorAll('.environment-tab').forEach((button) => {
+    const isActive = button.dataset.environment === current;
+    button.classList.toggle('active-development', isActive && current === 'development');
+    button.classList.toggle('active-production', isActive && current === 'production');
+  });
+
+  els.environmentUrl.textContent = url || 'No delivery URL';
+  els.environmentUrl.href = url || '#';
+  els.environmentSummary.classList.toggle('production', isProduction);
+  els.environmentSummary.textContent = `${label} / branch: ${environment.branch || '-'}${url ? ` / ${url}` : ''}`;
 }
 
 function nextNum(items) {
@@ -316,6 +344,7 @@ async function loadSource() {
     state.selectedNum = currentItems()[0]?.num || null;
     state.dirty = false;
     updateGitStatus(data.status);
+    updateEnvironment(data.environment);
     render();
     log('Loaded source JSON.');
   } catch (error) {
@@ -336,6 +365,7 @@ async function saveSource() {
     });
     state.dirty = false;
     updateGitStatus(data.status);
+    updateEnvironment(data.environment);
     log(`Saved and generated.\n${JSON.stringify(data.generated, null, 2)}`);
     await loadSource();
   } catch (error) {
@@ -351,6 +381,7 @@ async function generateOnly() {
   try {
     const data = await api('/api/generate', { method: 'POST', body: '{}' });
     updateGitStatus(data.status);
+    updateEnvironment(data.environment);
     log(`Generated delivery files.\n${JSON.stringify(data.generated, null, 2)}`);
   } catch (error) {
     log(error.message);
@@ -378,6 +409,7 @@ async function commitChanges() {
       }),
     });
     updateGitStatus(data.status);
+    updateEnvironment(data.environment);
     log(data.ok ? 'Committed successfully.' : data.message);
   } catch (error) {
     log(error.message);
@@ -399,6 +431,40 @@ function insertAtCursor(snippet, selectedTextFallback = '') {
   input.selectionStart = start + value.length;
   input.selectionEnd = start + value.length;
   markDirty();
+}
+
+async function switchEnvironment(environmentId) {
+  persistForm();
+  if (state.dirty) {
+    log('Save or discard unsaved edits before switching environments.');
+    return;
+  }
+
+  if (state.environment?.current === environmentId) return;
+
+  const targetLabel = environmentId === 'production' ? 'Production' : 'Development';
+  const confirmed = window.confirm(`Switch to ${targetLabel}? This changes the current Git branch.`);
+  if (!confirmed) return;
+
+  setButtonsDisabled(true);
+  try {
+    const data = await api('/api/environment', {
+      method: 'POST',
+      body: JSON.stringify({ environment: environmentId }),
+    });
+    state.source = data.source;
+    state.selectedNum = currentItems()[0]?.num || null;
+    state.dirty = false;
+    updateGitStatus(data.status);
+    updateEnvironment(data.environment);
+    render();
+    log(`Switched to ${targetLabel}.`);
+  } catch (error) {
+    log(error.message);
+  } finally {
+    setButtonsDisabled(false);
+    render();
+  }
 }
 
 function escapeHtml(value) {
@@ -436,6 +502,8 @@ els.newItemButton.addEventListener('click', () => addItem());
 els.duplicateButton.addEventListener('click', duplicateItem);
 els.deleteButton.addEventListener('click', deleteItem);
 els.commitButton.addEventListener('click', commitChanges);
+els.developmentEnvButton.addEventListener('click', () => switchEnvironment('development'));
+els.productionEnvButton.addEventListener('click', () => switchEnvironment('production'));
 
 window.addEventListener('beforeunload', (event) => {
   if (!state.dirty) return;

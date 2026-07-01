@@ -9,6 +9,21 @@ const execFileAsync = promisify(execFile);
 const PORT = Number(process.env.PORT || 4177);
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
+const ENVIRONMENTS = {
+  production: {
+    id: 'production',
+    label: 'Production',
+    branch: 'main',
+    url: 'https://news.xeloc.dxl-labs.dev/',
+  },
+  development: {
+    id: 'development',
+    label: 'Development',
+    branch: 'develop',
+    url: 'https://dev.news.xeloc.dxl-labs.dev/',
+  },
+};
+
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -137,15 +152,92 @@ async function getStatus() {
   return stdout.trimEnd();
 }
 
+async function getCurrentBranch() {
+  const { stdout } = await git(['branch', '--show-current']);
+  return stdout.trim();
+}
+
+function getEnvironmentByBranch(branch) {
+  return (
+    Object.values(ENVIRONMENTS).find((environment) => environment.branch === branch) || {
+      id: 'custom',
+      label: 'Custom',
+      branch,
+      url: '',
+    }
+  );
+}
+
+async function getEnvironmentState() {
+  const branch = await getCurrentBranch();
+  const environment = getEnvironmentByBranch(branch);
+  return {
+    current: environment.id,
+    branch,
+    url: environment.url,
+    environments: ENVIRONMENTS,
+  };
+}
+
+async function branchExists(branch) {
+  try {
+    await git(['rev-parse', '--verify', branch]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function remoteBranchExists(branch) {
+  try {
+    await git(['rev-parse', '--verify', `origin/${branch}`]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function switchEnvironment(environmentId) {
+  const environment = ENVIRONMENTS[environmentId];
+  if (!environment) throw new Error(`Unknown environment: ${environmentId}`);
+
+  const status = await getStatus();
+  if (status) {
+    throw new Error('Please commit or discard local changes before switching environments.');
+  }
+
+  const branch = environment.branch;
+  if (await branchExists(branch)) {
+    await git(['switch', branch]);
+  } else if (await remoteBranchExists(branch)) {
+    await git(['switch', '--track', `origin/${branch}`]);
+  } else {
+    await git(['switch', '-c', branch]);
+  }
+
+  return getEnvironmentState();
+}
+
 async function handleApi(req, res, pathname) {
   try {
     if (req.method === 'GET' && pathname === '/api/source') {
-      sendJson(res, 200, { source: await readSource(), status: await getStatus() });
+      sendJson(res, 200, {
+        source: await readSource(),
+        status: await getStatus(),
+        environment: await getEnvironmentState(),
+      });
       return;
     }
 
     if (req.method === 'GET' && pathname === '/api/status') {
-      sendJson(res, 200, { status: await getStatus() });
+      sendJson(res, 200, { status: await getStatus(), environment: await getEnvironmentState() });
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/environment') {
+      const payload = await readRequestJson(req);
+      const environment = await switchEnvironment(String(payload.environment || ''));
+      sendJson(res, 200, { ok: true, environment, source: await readSource(), status: await getStatus() });
       return;
     }
 
@@ -153,13 +245,23 @@ async function handleApi(req, res, pathname) {
       const payload = await readRequestJson(req);
       await saveSource(payload.source);
       const generated = await generateAll();
-      sendJson(res, 200, { ok: true, generated, status: await getStatus() });
+      sendJson(res, 200, {
+        ok: true,
+        generated,
+        status: await getStatus(),
+        environment: await getEnvironmentState(),
+      });
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/generate') {
       const generated = await generateAll();
-      sendJson(res, 200, { ok: true, generated, status: await getStatus() });
+      sendJson(res, 200, {
+        ok: true,
+        generated,
+        status: await getStatus(),
+        environment: await getEnvironmentState(),
+      });
       return;
     }
 
@@ -173,14 +275,20 @@ async function handleApi(req, res, pathname) {
       await git(['add', 'source', 'ja', 'en']);
       const staged = (await git(['diff', '--cached', '--name-only'])).stdout.trim();
       if (!staged) {
-        sendJson(res, 200, { ok: false, message: 'No staged changes', status: await getStatus() });
+        sendJson(res, 200, {
+          ok: false,
+          message: 'No staged changes',
+          status: await getStatus(),
+          environment: await getEnvironmentState(),
+        });
         return;
       }
 
       await git(['commit', '-m', message]);
       let pushOutput = '';
       if (push) {
-        pushOutput = (await git(['push'])).stdout;
+        const branch = await getCurrentBranch();
+        pushOutput = (await git(['push', '-u', 'origin', branch])).stdout;
       }
       sendJson(res, 200, {
         ok: true,
@@ -188,6 +296,7 @@ async function handleApi(req, res, pathname) {
         pushed: push,
         pushOutput,
         status: await getStatus(),
+        environment: await getEnvironmentState(),
       });
       return;
     }

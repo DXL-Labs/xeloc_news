@@ -106,3 +106,98 @@ npm run generate
 - `{lang}/all.json`: initial full fetch payload
 - `{lang}/{num}.json`: differential fetch payload
 - `{lang}/latest_num.json`: legacy latest number payload
+
+
+## Environments
+
+The CMS supports two delivery environments from one UI.
+
+```text
+Development
+  branch: develop
+  delivery URL: https://dev.news.xeloc.dxl-labs.dev/
+
+Production
+  branch: main
+  delivery URL: https://news.xeloc.dxl-labs.dev/
+```
+
+Use the Environment switcher in the CMS header to change the current Git branch.
+The CMS blocks switching when there are local uncommitted changes. Save, commit, or discard changes
+before switching environments.
+
+First-time development setup:
+
+```bash
+git switch -c develop
+git push -u origin develop
+git switch main
+```
+
+After the branch exists, the CMS can switch between `main` and `develop`.
+
+Recommended flow:
+
+```text
+1. Switch to Development
+2. Edit news
+3. Save
+4. Commit + Push
+5. Confirm https://dev.news.xeloc.dxl-labs.dev/
+6. Switch to Production
+7. Apply or merge the confirmed change to main
+8. Commit + Push
+9. Confirm https://news.xeloc.dxl-labs.dev/
+```
+
+## Cloudflare Pages Domains
+
+Recommended Cloudflare setup is two Pages projects connected to the same GitHub repository.
+
+```text
+xeloc-news-dev
+  Production branch: develop
+  Custom domain: dev.news.xeloc.dxl-labs.dev
+
+xeloc-news-prod
+  Production branch: main
+  Custom domain: news.xeloc.dxl-labs.dev
+```
+
+Cloudflare Pages setup:
+
+1. Open Cloudflare Dashboard.
+2. Go to Workers & Pages.
+3. Create a Pages project from the GitHub repository.
+4. For the production project, set the production branch to `main`.
+5. For the development project, create another Pages project and set the production branch to `develop`.
+6. Build settings can be left empty for this static JSON repository.
+7. Add custom domains:
+   - `news.xeloc.dxl-labs.dev` to the production Pages project
+   - `dev.news.xeloc.dxl-labs.dev` to the development Pages project
+8. Cloudflare will create the required DNS records automatically if the zone is managed in Cloudflare.
+
+If the DNS records are created manually, use CNAME records:
+
+```text
+news      CNAME  <production-pages-project>.pages.dev
+dev.news  CNAME  <development-pages-project>.pages.dev
+```
+
+In the Cloudflare DNS UI, the second record is usually entered as:
+
+```text
+Type: CNAME
+Name: dev.news
+Target: <development-pages-project>.pages.dev
+Proxy status: Proxied
+```
+
+The production record is:
+
+```text
+Type: CNAME
+Name: news
+Target: <production-pages-project>.pages.dev
+Proxy status: Proxied
+```

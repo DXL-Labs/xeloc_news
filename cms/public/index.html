@@ -12,6 +12,14 @@
 				<p class="eyebrow">xeloc</p>
 				<h1>News CMS</h1>
 			</div>
+			<div class="environment-switcher" aria-label="Environment">
+				<p class="eyebrow">Environment</p>
+				<div class="environment-tabs">
+					<button id="developmentEnvButton" class="environment-tab" data-environment="development" type="button">Development</button>
+					<button id="productionEnvButton" class="environment-tab" data-environment="production" type="button">Production</button>
+				</div>
+				<a id="environmentUrl" class="environment-url" href="#" target="_blank" rel="noopener noreferrer">No URL</a>
+			</div>
 			<div class="actions">
 				<button id="reloadButton" class="secondary" type="button">
 					Reload
@@ -121,6 +129,7 @@
 
 			<aside class="publish-panel">
 				<h2>Publish</h2>
+				<div id="environmentSummary" class="environment-summary">Loading environment...</div>
 				<p class="hint">
 					Save writes source JSON and regenerates app delivery files. Commit
 					stages source and generated files.
