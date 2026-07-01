@@ -96,6 +96,35 @@ h1 {
   font-size: 24px;
 }
 
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.branch-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #eef3f6;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.branch-badge.development {
+  background: #e8f8f3;
+  color: var(--accent-strong);
+}
+
+.branch-badge.production {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
 h2 {
   font-size: 20px;
 }

@@ -20,6 +20,7 @@ const els = {
   productionEnvButton: document.querySelector('#productionEnvButton'),
   environmentUrl: document.querySelector('#environmentUrl'),
   environmentSummary: document.querySelector('#environmentSummary'),
+  branchBadge: document.querySelector('#branchBadge'),
   newsList: document.querySelector('#newsList'),
   editorMeta: document.querySelector('#editorMeta'),
   editorTitle: document.querySelector('#editorTitle'),
@@ -114,6 +115,10 @@ function updateEnvironment(environment) {
   els.environmentUrl.href = url || '#';
   els.environmentSummary.classList.toggle('production', isProduction);
   els.environmentSummary.textContent = `${label} / branch: ${environment.branch || '-'}${url ? ` / ${url}` : ''}`;
+
+  els.branchBadge.textContent = `branch: ${environment.branch || '-'}`;
+  els.branchBadge.classList.toggle('production', isProduction);
+  els.branchBadge.classList.toggle('development', current === 'development');
 }
 
 function nextNum(items) {
