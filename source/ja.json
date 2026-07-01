@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "language": "ja",
-  "version": 13,
-  "updatedAt": "2026-07-01T09:56:25.096Z",
+  "version": 16,
+  "updatedAt": "2026-07-01T12:31:15.346Z",
   "items": [
     {
       "num": 1,
@@ -12,6 +12,16 @@
       "body": "ダウンロードありがとうございます。\nxelocはシンプルなXRP Ledger Clientです。\n最低限のトランザクションフィーで操作可能です。\n是非ご利用ください。\n[アプリサイトはこちら。](https://xeloc.dxl-labs.dev/)\n[開発者サイトはこちら。](https://dxl-labs.dev/)",
       "createdAt": "2026-06-19T00:00:00.000Z",
       "updatedAt": "2026-06-19T03:14:08.234Z",
+      "note": ""
+    },
+    {
+      "num": 2,
+      "status": "published",
+      "date": "2026-07-14",
+      "title": "テスト",
+      "body": "開発環境テスト",
+      "createdAt": "2026-07-01T12:30:28.769Z",
+      "updatedAt": "2026-07-01T12:30:57.489Z",
       "note": ""
     }
   ]

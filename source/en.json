@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "language": "en",
-  "version": 13,
-  "updatedAt": "2026-07-01T09:56:25.097Z",
+  "version": 16,
+  "updatedAt": "2026-07-01T12:31:15.347Z",
   "items": [
     {
       "num": 1,
@@ -12,6 +12,16 @@
       "body": "Thank you for downloading.\nXeloc is a simple XRP Ledger Client.\nIt operates with minimal transaction fees.\nPlease feel free to use it.\n[App site.](https://xeloc.dxl-labs.dev/)\n[Developer site.](https://dxl-labs.dev/)",
       "createdAt": "2026-06-19T00:00:00.000Z",
       "updatedAt": "2026-06-19T03:14:14.752Z",
+      "note": ""
+    },
+    {
+      "num": 2,
+      "status": "published",
+      "date": "2026-07-14",
+      "title": "test",
+      "body": "Dev test",
+      "createdAt": "2026-07-01T12:31:00.524Z",
+      "updatedAt": "2026-07-01T12:31:15.347Z",
       "note": ""
     }
   ]
